@@ -4,6 +4,7 @@ CHANGELOG
 unreleased
 ----------
 - Use generic error with console log when a payment method fails to set up
+- Update braintree-web to v3.32.0
 
 1.10.0
 ------
