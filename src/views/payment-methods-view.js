@@ -6,6 +6,7 @@ var DropinError = require('../lib/dropin-error');
 var classlist = require('../lib/classlist');
 var errors = require('../constants').errors;
 var Promise = require('../lib/promise');
+var addSelectionEventHandler = require('../lib/add-selection-event-handler');
 
 var PAYMENT_METHOD_TYPE_TO_TRANSLATION_STRING = {
   CreditCard: 'Card',
@@ -32,6 +33,8 @@ PaymentMethodsView.prototype._initialize = function () {
   this.views = [];
   this.container = this.getElementById('methods-container');
   this._headingLabel = this.getElementById('methods-label');
+  this._editButton = this.getElementById('edit');
+  this._doneEdittingButton = this.getElementById('done-edit');
 
   this.model.on('addPaymentMethod', this._addPaymentMethod.bind(this));
   this.model.on('removePaymentMethod', this._removePaymentMethod.bind(this));
@@ -40,6 +43,13 @@ PaymentMethodsView.prototype._initialize = function () {
   for (i = paymentMethods.length - 1; i >= 0; i--) {
     this._addPaymentMethod(paymentMethods[i]);
   }
+
+  addSelectionEventHandler(this._editButton, function () {
+    this._enableEditMode();
+  }.bind(this));
+  addSelectionEventHandler(this._doneEdittingButton, function () {
+    this._disableEditMode();
+  }.bind(this));
 };
 
 PaymentMethodsView.prototype.removeActivePaymentMethod = function () {
@@ -49,6 +59,18 @@ PaymentMethodsView.prototype.removeActivePaymentMethod = function () {
   this.activeMethodView.setActive(false);
   this.activeMethodView = null;
   classlist.add(this._headingLabel, 'braintree-no-payment-method-selected');
+};
+
+PaymentMethodsView.prototype._enableEditMode = function () {
+  this.model.enableEditMode();
+
+  classlist.remove(this._doneEdittingButton, 'braintree-hidden');
+};
+
+PaymentMethodsView.prototype._disableEditMode = function () {
+  this.model.disableEditMode();
+
+  classlist.add(this._doneEdittingButton, 'braintree-hidden');
 };
 
 PaymentMethodsView.prototype._getPaymentMethodString = function () {

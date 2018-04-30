@@ -25,6 +25,7 @@ $loader-scale-duration: 300ms;
 [data-braintree-id='wrapper'] {
   // dropin.js has display = 'none' to prevent flicker before CSS has loaded
   display: block !important;
+  position: relative;
 }
 
 .braintree-dropin * {
@@ -763,7 +764,8 @@ $loader-scale-duration: 300ms;
     }
   }
 
-  .braintree-method__check {
+  .braintree-method__check,
+  .braintree-method__delete {
     background-color: $background-color;
     border-radius: 100px;
     fill: $background-color;
@@ -777,6 +779,10 @@ $loader-scale-duration: 300ms;
     svg {
       width: 100%;
     }
+  }
+
+  .braintree-method__delete, .braintree-method__delete-container:before {
+    background-color: $error-color;
   }
 }
 
@@ -798,10 +804,14 @@ $loader-scale-duration: 300ms;
     margin-bottom: 0px;
   }
 
-  .braintree-method__check {
-    background-color: $highlight-color;
+  .braintree-method__check,
+  .braintree-method__delete {
     fill: white;
     transform: scale(1);
+  }
+
+  .braintree-method__check {
+    background-color: $highlight-color;
   }
 
   .braintree-method__label {
@@ -809,8 +819,8 @@ $loader-scale-duration: 300ms;
   }
 }
 
-
-.braintree-method__check-container {
+.braintree-method__check-container, 
+.braintree-method__delete-container {
   position: relative;
 
   &:before {
@@ -822,6 +832,14 @@ $loader-scale-duration: 300ms;
     transform: scale(0.9);
     width: 41px;
   }
+}
+.braintree-show-methods-edit-mode .braintree-method__check-container,
+.braintree-method__delete-container {
+  display: none;
+}
+
+.braintree-show-methods-edit-mode .braintree-method__delete-container {
+  display: block;
 }
 
 .braintree-methods {
@@ -838,7 +856,7 @@ $loader-scale-duration: 300ms;
 /* =========================================================================
    Toggle
    ========================================================================= */
-.braintree-toggle {
+.braintree-toggle, .braintree-done-edit {
   background: $background-color;
   border-radius: $radius-default;
   color: $text-color;
@@ -887,15 +905,23 @@ $loader-scale-duration: 300ms;
 
 
 [data-braintree-id='methods-label'],
-[data-braintree-id='choose-a-way-to-pay'] {
+.braintree-show-methods.braintree-show-methods-edit-mode [data-braintree-id='methods-label'],
+[data-braintree-id='choose-a-way-to-pay'],
+[data-braintree-id='edit'],
+.braintree-show-methods.braintree-show-methods-edit-mode [data-braintree-id='edit'] {
   position: absolute;
   transform: translateY(30px);
   transition: transform 200ms ease;
   visibility: hidden;
 }
 
+[data-braintree-id='edit'] {
+  right: 5px;
+}
+
 .braintree-show-methods [data-braintree-id='methods-label'],
-.braintree-show-options [data-braintree-id='choose-a-way-to-pay'] {
+.braintree-show-options [data-braintree-id='choose-a-way-to-pay'],
+.braintree-show-methods [data-braintree-id='edit'] {
   transform: none;
   visibility: visible;
 }
@@ -904,7 +930,8 @@ $loader-scale-duration: 300ms;
   transform: translateY(30px);
 }
 
-.braintree-show-methods.braintree-show-options [data-braintree-id='choose-a-way-to-pay'] {
+.braintree-show-methods.braintree-show-options [data-braintree-id='choose-a-way-to-pay'],
+.braintree-show-methods.braintree-show-options [data-braintree-id='edit'] {
   transform: translateY(30px);
   visibility: hidden;
 }
@@ -1019,16 +1046,19 @@ $loader-scale-duration: 300ms;
     clear: both;
   }
 
-  .braintree-method__check-container {
+  .braintree-method__check-container, 
+  .braintree-method__delete-container {
     float: right;
     position: relative;
   }
 
-  .braintree-method__check-container:before {
+  .braintree-method__check-container:before, 
+  .braintree-method__delete-container:before {
     right: 0;
   }
 
-  .braintree-method__check {
+  .braintree-method__check,
+  .briantre-method__delete {
     margin-right: 0;
     right: 0;
     position: absolute;

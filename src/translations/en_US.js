@@ -5,6 +5,8 @@ module.exports = {
   chooseAnotherWayToPay: 'Choose another way to pay',
   chooseAWayToPay: 'Choose a way to pay',
   otherWaysToPay: 'Other ways to pay',
+  edit: 'Edit',
+  doneEditting: 'Done',
   cardVerification: 'Card Verification',
   // Errors
   fieldEmptyForCvv: 'Please fill out a CVV.',

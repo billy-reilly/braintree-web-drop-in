@@ -28,6 +28,10 @@ PaymentMethodView.prototype._initialize = function () {
   this.element.setAttribute('tabindex', '0');
 
   addSelectionEventHandler(this.element, function () {
+    if (this.model.isInEditMode()) {
+      return;
+    }
+
     this.model.changeActivePaymentMethod(this.paymentMethod);
   }.bind(this));
 
@@ -68,6 +72,10 @@ PaymentMethodView.prototype._initialize = function () {
   }
 
   this.element.innerHTML = html;
+
+  addSelectionEventHandler(this.element.querySelector('.braintree-method__delete-container'), function () {
+    // open confirmation dialog
+  }.bind(this));
 };
 
 PaymentMethodView.prototype.setActive = function (isActive) {

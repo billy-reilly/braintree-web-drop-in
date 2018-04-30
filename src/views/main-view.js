@@ -50,6 +50,16 @@ MainView.prototype._initialize = function () {
 
   this.model.on('errorOccurred', this.showSheetError.bind(this));
   this.model.on('errorCleared', this.hideSheetError.bind(this));
+  this.model.on('enableEditMode', function () {
+    classlist.remove(this.paymentMethodsViews.container, 'braintree-methods--active');
+    classlist.add(this.element, 'braintree-show-methods-edit-mode');
+    this.hideToggle();
+  }.bind(this));
+  this.model.on('disableEditMode', function () {
+    classlist.add(this.paymentMethodsViews.container, 'braintree-methods--active');
+    classlist.remove(this.element, 'braintree-show-methods-edit-mode');
+    this.showToggle();
+  }.bind(this));
 
   this.paymentSheetViewIDs = Object.keys(sheetViews).reduce(function (ids, sheetViewKey) {
     var PaymentSheetView, paymentSheetView;
