@@ -74,7 +74,7 @@ PaymentMethodView.prototype._initialize = function () {
   this.element.innerHTML = html;
 
   addSelectionEventHandler(this.element.querySelector('.braintree-method__delete-container'), function () {
-    // open confirmation dialog
+    this.model.submitPaymentMethodDeleteRequest(this.paymentMethod);
   }.bind(this));
 };
 

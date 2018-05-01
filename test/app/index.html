@@ -229,6 +229,12 @@
 
       dropinInstance = instance;
 
+      dropinInstance.on('deletePaymentMethod', function (event) {
+        setTimeout(function () {
+          event.reply(true);
+        }, 1500);
+      });
+
       ready.textContent = 'ready';
     });
   }

@@ -349,6 +349,23 @@ Dropin.prototype._initialize = function (callback) {
       self._emit('paymentOptionSelected', event);
     });
 
+    self._model.on('submitPaymentMethodDeleteRequest', function (paymentMethod) {
+      self._mainView.showLoadingIndicator();
+      self._emit('deletePaymentMethod', {
+        paymentMethod: paymentMethod,
+        reply: function (success) {
+          if (success === true) {
+            self._model.removePaymentMethod(paymentMethod);
+            self._mainView.setInitialView();
+          } else {
+            self._model.reportError('paymentMethodCouldNotBeRemoved');
+          }
+          self._model.disableEditMode();
+          self._mainView.hideLoadingIndicator();
+        }
+      });
+    });
+
     return self._setUpDependenciesAndViews();
   }).catch(function (err) {
     self.teardown().then(function () {

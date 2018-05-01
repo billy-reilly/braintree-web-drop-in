@@ -27,10 +27,7 @@ MainView.prototype = Object.create(BaseView.prototype);
 MainView.prototype.constructor = MainView;
 
 MainView.prototype._initialize = function () {
-  var paymentOptionsView;
-  var hasMultiplePaymentOptions = this.model.supportedPaymentOptions.length > 1;
-  var paymentMethods = this.model.getPaymentMethods();
-  var preselectVaultedPaymentMethod = this.model.merchantConfiguration.preselectVaultedPaymentMethod !== false;
+  this._hasMultiplePaymentOptions = this.model.supportedPaymentOptions.length > 1;
 
   this._views = {};
 
@@ -44,6 +41,8 @@ MainView.prototype._initialize = function () {
   this.loadingIndicator = this.getElementById('loading-indicator');
   this.dropinContainer = this.element.querySelector('.braintree-dropin');
 
+  this._doneEdittingButton = this.getElementById('done-edit');
+
   this.supportsFlexbox = supportsFlexbox();
 
   this.model.on('asyncDependenciesReady', this.hideLoadingIndicator.bind(this));
@@ -51,14 +50,14 @@ MainView.prototype._initialize = function () {
   this.model.on('errorOccurred', this.showSheetError.bind(this));
   this.model.on('errorCleared', this.hideSheetError.bind(this));
   this.model.on('enableEditMode', function () {
+    classlist.remove(this._doneEdittingButton, 'braintree-hidden');
     classlist.remove(this.paymentMethodsViews.container, 'braintree-methods--active');
     classlist.add(this.element, 'braintree-show-methods-edit-mode');
-    this.hideToggle();
   }.bind(this));
   this.model.on('disableEditMode', function () {
+    classlist.add(this._doneEdittingButton, 'braintree-hidden');
     classlist.add(this.paymentMethodsViews.container, 'braintree-methods--active');
     classlist.remove(this.element, 'braintree-show-methods-edit-mode');
-    this.showToggle();
   }.bind(this));
 
   this.paymentSheetViewIDs = Object.keys(sheetViews).reduce(function (ids, sheetViewKey) {
@@ -127,8 +126,8 @@ MainView.prototype._initialize = function () {
     }
   }.bind(this));
 
-  if (hasMultiplePaymentOptions) {
-    paymentOptionsView = new PaymentOptionsView({
+  if (this._hasMultiplePaymentOptions) {
+    this._paymentOptionsView = new PaymentOptionsView({
       client: this.client,
       element: this.getElementById(PaymentOptionsView.ID),
       mainView: this,
@@ -136,8 +135,15 @@ MainView.prototype._initialize = function () {
       strings: this.strings
     });
 
-    this.addView(paymentOptionsView);
+    this.addView(this._paymentOptionsView);
   }
+
+  this.setInitialView();
+};
+
+MainView.prototype.setInitialView = function () {
+  var preselectVaultedPaymentMethod = this.model.merchantConfiguration.preselectVaultedPaymentMethod !== false;
+  var paymentMethods = this.model.getPaymentMethods();
 
   if (paymentMethods.length > 0) {
     if (preselectVaultedPaymentMethod) {
@@ -145,8 +151,8 @@ MainView.prototype._initialize = function () {
     } else {
       this.setPrimaryView(this.paymentMethodsViews.ID);
     }
-  } else if (hasMultiplePaymentOptions) {
-    this.setPrimaryView(paymentOptionsView.ID);
+  } else if (this._hasMultiplePaymentOptions) {
+    this.setPrimaryView(this._paymentOptionsView.ID);
   } else {
     this.setPrimaryView(this.paymentSheetViewIDs[0]);
   }
@@ -218,18 +224,24 @@ MainView.prototype.requestPaymentMethod = function () {
 MainView.prototype.hideLoadingIndicator = function () {
   classlist.add(this.dropinContainer, 'braintree-loaded');
   transitionHelper.onTransitionEnd(this.loadingIndicator, 'transform', function () {
-    this.loadingContainer.parentNode.removeChild(this.loadingContainer);
+    classlist.add(this.loadingContainer, 'braintree-hidden');
+  }.bind(this));
+};
+
+MainView.prototype.showLoadingIndicator = function () {
+  classlist.remove(this.dropinContainer, 'braintree-loaded');
+  transitionHelper.onTransitionEnd(this.dropinContainer, 'transform', function () {
+    classlist.remove(this.loadingContainer, 'braintree-hidden');
   }.bind(this));
 };
 
 MainView.prototype.toggleAdditionalOptions = function () {
   var sheetViewID;
-  var hasMultiplePaymentOptions = this.model.supportedPaymentOptions.length > 1;
   var isPaymentSheetView = this.paymentSheetViewIDs.indexOf(this.primaryView.ID) !== -1;
 
   this.hideToggle();
 
-  if (!hasMultiplePaymentOptions) {
+  if (!this._hasMultiplePaymentOptions) {
     sheetViewID = this.paymentSheetViewIDs[0];
 
     classlist.add(this.element, prefixShowClass(sheetViewID));

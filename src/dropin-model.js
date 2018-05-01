@@ -108,6 +108,11 @@ DropinModel.prototype.isInEditMode = function () {
   return Boolean(this._isInEditMode);
 };
 
+DropinModel.prototype.submitPaymentMethodDeleteRequest = function (paymentMethod) {
+  this._paymentMethodDeleteInProgress = true; // TODO, maybe not necessary?
+  this._emit('submitPaymentMethodDeleteRequest', paymentMethod);
+};
+
 DropinModel.prototype._shouldEmitRequestableEvent = function (options) {
   var requestableStateHasNotChanged = this.isPaymentMethodRequestable() === options.isRequestable;
   var typeHasNotChanged = options.type === this._paymentMethodRequestableType;

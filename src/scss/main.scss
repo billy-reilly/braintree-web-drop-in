@@ -856,35 +856,49 @@ $loader-scale-duration: 300ms;
 /* =========================================================================
    Toggle
    ========================================================================= */
+
 .braintree-toggle, .braintree-done-edit {
-  background: $background-color;
-  border-radius: $radius-default;
-  color: $text-color;
-  cursor: pointer;
-  font-size: 14px;
-  margin: 0 auto;
-  padding: 18px;
-  text-align: center;
-  width: 100%;
+  display: none;
+}
 
-  &:hover {
-    background: $background-hover;
-    font-weight: 500;
-  }
+.braintree-loaded {
+  .braintree-toggle, .braintree-done-edit {
+    display: block;
+    background: $background-color;
+    border-radius: $radius-default;
+    color: $text-color;
+    cursor: pointer;
+    font-size: 14px;
+    margin: 0 auto;
+    padding: 18px;
+    text-align: center;
+    width: 100%;
 
-  &:hover span {
-    border-color: black;
-  }
+    &:hover {
+      background: $background-hover;
+      font-weight: 500;
+    }
 
-  span {
-    border-bottom: 1px solid $border-color;
-    padding-bottom: 1px;
-  }
+    &:hover span {
+      border-color: black;
+    }
 
-  &.braintree-hidden {
-    display: none;
+    span {
+      border-bottom: 1px solid $border-color;
+      padding-bottom: 1px;
+    }
+
+    &.braintree-hidden {
+      display: none;
+    }
   }
 }
+
+.braintree-show-methods-edit-mode .braintree-toggle {
+  display: none;
+}
+
+
 
 /* =========================================================================
    Dropin Visibility States
@@ -921,7 +935,7 @@ $loader-scale-duration: 300ms;
 
 .braintree-show-methods [data-braintree-id='methods-label'],
 .braintree-show-options [data-braintree-id='choose-a-way-to-pay'],
-.braintree-show-methods [data-braintree-id='edit'] {
+[class="braintree-show-methods"] [data-braintree-id='edit'] {
   transform: none;
   visibility: visible;
 }

@@ -44,11 +44,15 @@ PaymentMethodsView.prototype._initialize = function () {
     this._addPaymentMethod(paymentMethods[i]);
   }
 
+  if (this.model.isGuestCheckout) {
+    classlist.add(this._editButton, 'braintree-hidden');
+  }
+
   addSelectionEventHandler(this._editButton, function () {
-    this._enableEditMode();
+    this.model.enableEditMode();
   }.bind(this));
   addSelectionEventHandler(this._doneEdittingButton, function () {
-    this._disableEditMode();
+    this.model.disableEditMode();
   }.bind(this));
 };
 
@@ -59,18 +63,6 @@ PaymentMethodsView.prototype.removeActivePaymentMethod = function () {
   this.activeMethodView.setActive(false);
   this.activeMethodView = null;
   classlist.add(this._headingLabel, 'braintree-no-payment-method-selected');
-};
-
-PaymentMethodsView.prototype._enableEditMode = function () {
-  this.model.enableEditMode();
-
-  classlist.remove(this._doneEdittingButton, 'braintree-hidden');
-};
-
-PaymentMethodsView.prototype._disableEditMode = function () {
-  this.model.disableEditMode();
-
-  classlist.add(this._doneEdittingButton, 'braintree-hidden');
 };
 
 PaymentMethodsView.prototype._getPaymentMethodString = function () {
